@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    loadbalancer:
+      cache:
+        ttl:
+    nacos:
+      config:
+        server-addr: 192.168.100.254:8899
+#        namespace: adc7c825-3ca9-464f-9a93-7eed99a410a6
+        username: nacos
+        password: nacos
+        extension-configs:
+          - data-id: hua.yml
+            group: DEFAULT_GROUP
+            refresh: true
+logging:
+  level:
+    root: WARN
