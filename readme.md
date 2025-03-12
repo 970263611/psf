@@ -1,3 +1,4 @@
+PSF
 ```yaml
 spring:
   cloud:
@@ -11,14 +12,14 @@ spring:
           enabled: true
       routes:
         - id: abc
-          uri: lb://hahaha
+          uri: lb://dalu
           predicates:
-          - Path=/abcd
+            - Path=/api/hello
     nacos:
       discoveries:
-        - serverAddr: 192.168.100.254:8899
-          username: nacos
-          password: nacos
+        - serverAddr: 192.168.100.254:8848
+          # username: nacos
+          # password: nacos
           # namespace: 2b758abe-54d1-4d46-b54e-97a1adfc2bab
           group: DEFAULT_GROUP
     sentinel:
@@ -55,10 +56,8 @@ spring:
     psf:
       predicates:
         uri:
-          - path: abcd1
-            return: 
-              a: e
-              b: e
+          - path: /api/hello
+            return: {"a":1,"b":["a","b"]}
         header:
           - a: '["a","b"]'
             b: c
@@ -72,7 +71,7 @@ spring:
               b: 222
         exception:
           - name: com.psbc.psf.exception.PsfFlowControlException
-            return: 
+            return:
               a: 111
               b: 2221
         defaultReturn:

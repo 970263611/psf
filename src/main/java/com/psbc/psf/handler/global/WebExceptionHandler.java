@@ -1,4 +1,4 @@
-package com.psbc.psf.filter;
+package com.psbc.psf.handler.global;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,10 +25,10 @@ import java.util.Map;
  * desc:
  */
 @Component
-@Order(-2)
-public class GlobalWebExceptionHandler implements ErrorWebExceptionHandler {
+@Order(-1)
+public class WebExceptionHandler implements ErrorWebExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(GlobalWebExceptionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebExceptionHandler.class);
     @Autowired
     private PsfPredicatesProperties psfPredicatesProperties;
     @Autowired
@@ -36,7 +36,7 @@ public class GlobalWebExceptionHandler implements ErrorWebExceptionHandler {
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable throwable) {
-        logger.error("Psf find exception {}", throwable);
+        logger.error("Psf find exception: ", throwable);
         Map defaultReturn = psfPredicatesProperties.getDefaultReturn();
         String data = "Psf find exception: " + throwable.getMessage();
         if (defaultReturn != null) {

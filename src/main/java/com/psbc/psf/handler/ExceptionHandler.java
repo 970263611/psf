@@ -27,7 +27,7 @@ public class ExceptionHandler extends AbstractHandler {
     public void doHandler(ChainContext chainContext) {
         if (chainContext.hasThrowable()) {
             Throwable throwable = chainContext.getThrowable();
-            logger.error("Psf find exception {}", throwable);
+            logger.error("Psf find exception: ", throwable);
             String name = throwable.getClass().getName();
             List<Map<String, Object>> exceptions = psfPredicatesProperties.getException();
             for (Map<String, Object> exception : exceptions) {

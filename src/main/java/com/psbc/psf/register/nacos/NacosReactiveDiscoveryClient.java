@@ -13,8 +13,6 @@ import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
 import reactor.core.publisher.Flux;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * 2025/3/10 12:03
@@ -41,7 +39,11 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
     @Override
     public Flux<ServiceInstance> getInstances(String serviceId) {
         loadSourceData();
-        return Flux.fromIterable(serviceInstances.get(serviceId));
+        List<ServiceInstance> serviceInstances = this.serviceInstances.get(serviceId);
+        if (serviceInstances == null) {
+            return Flux.empty();
+        }
+        return Flux.fromIterable(this.serviceInstances.get(serviceId));
     }
 
     @Override
@@ -56,8 +58,12 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
         try {
             Properties properties = new Properties();
             properties.put("serverAddr", configProperties.getServerAddr());
-            properties.put("username", configProperties.getUsername());
-            properties.put("password", configProperties.getPassword());
+            if (configProperties.getUsername() != null) {
+                properties.put("username", configProperties.getUsername());
+            }
+            if (configProperties.getPassword() != null) {
+                properties.put("password", configProperties.getPassword());
+            }
             properties.put("namespace", configProperties.getNamespace());
             NamingService namingService = NacosFactory.createNamingService(properties);
             loadServices(namingService, configProperties.getGroup());
