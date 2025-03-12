@@ -12,12 +12,17 @@ spring:
           enabled: true
       routes:
         - id: abc
-          uri: lb://dalu
+          uri: http://dalu
           predicates:
-            - Path=/api/hello
+            # - Path=/api/hello
+            - name: Body
+              keysAndValues:
+                - key: a
+                  value: b
+
     nacos:
       discoveries:
-        - serverAddr: 192.168.100.254:8848
+        - serverAddr: localhost:8848
           # username: nacos
           # password: nacos
           # namespace: 2b758abe-54d1-4d46-b54e-97a1adfc2bab

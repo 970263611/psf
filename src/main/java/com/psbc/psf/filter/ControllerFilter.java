@@ -35,14 +35,22 @@ public class ControllerFilter implements GlobalFilter {
         String routerId = (String) exchange.getAttributes().get(ServerWebExchangeUtils.GATEWAY_PREDICATE_MATCHED_PATH_ROUTE_ID_ATTR);
         ChainContext chainContext = new ChainContext(routerId, exchange);
         handlerChain.handle(chainContext);
+        ServerHttpResponse response = exchange.getResponse();
         if (chainContext.hasResponse()) {
-            ServerHttpResponse response = exchange.getResponse();
-            response.setStatusCode(HttpStatus.OK);
-            response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-            byte[] bytes = chainContext.getResponseData().getBytes(StandardCharsets.UTF_8);
-            DataBuffer buffer = response.bufferFactory().wrap(bytes);
-            return response.writeWith(Mono.just(buffer));
+            return buildResponse(response, chainContext);
         }
-        return chain.filter(exchange);
+        return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+            if (response.getStatusCode() != HttpStatus.OK) {
+                buildResponse(response, chainContext);
+            }
+        }));
+    }
+
+    private Mono<Void> buildResponse(ServerHttpResponse response, ChainContext chainContext) {
+        response.setStatusCode(HttpStatus.OK);
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        byte[] bytes = chainContext.getResponseData().getBytes(StandardCharsets.UTF_8);
+        DataBuffer buffer = response.bufferFactory().wrap(bytes);
+        return response.writeWith(Mono.just(buffer));
     }
 }
