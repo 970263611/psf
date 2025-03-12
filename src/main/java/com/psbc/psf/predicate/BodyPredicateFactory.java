@@ -1,9 +1,7 @@
 package com.psbc.psf.predicate;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ParseContext;
 import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
@@ -12,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.handler.predicate.AbstractRoutePredicateFactory;
-import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -27,7 +24,7 @@ import java.util.function.Predicate;
  * desc:
  */
 @Component
-public class BodyPredicateFactory extends AbstractRoutePredicateFactory<BodyPredicateProperties> {
+public class BodyPredicateFactory extends AbstractRoutePredicateFactory<BodyPredicateFactory.Config> {
 
     private static final Logger logger = LoggerFactory.getLogger(BodyPredicateFactory.class);
 
@@ -45,7 +42,7 @@ public class BodyPredicateFactory extends AbstractRoutePredicateFactory<BodyPred
     }
 
     public BodyPredicateFactory() {
-        super(BodyPredicateProperties.class);
+        super(Config.class);
     }
 
     @Override
@@ -54,35 +51,63 @@ public class BodyPredicateFactory extends AbstractRoutePredicateFactory<BodyPred
     }
 
     @Override
-    public Predicate<ServerWebExchange> apply(BodyPredicateProperties config) {
+    public Predicate<ServerWebExchange> apply(Config config) {
         return exchange -> {
-            String cachedBody = exchange.getAttribute(ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR);
-            if (cachedBody == null) return false;
-            try {
-                JsonNode jsonNode = objectMapper.readTree(cachedBody);
-                List<BodyPredicateProperties.KV> keysAndValues = config.getKeysAndValues();
-                for (BodyPredicateProperties.KV keysAndValue : keysAndValues) {
-                    String key = keysAndValue.getKey();
-                    String value = keysAndValue.getValue();
-                    DocumentContext ctx = parseContext.parse(jsonNode);
-                    String configValue = ctx.read("$." + key, String.class);
-                    if (value == null) {
-                        return false;
-                    }
-                    if (value.equalsIgnoreCase(configValue)) {
-                        return true;
-                    }
-                    System.out.println(configValue);
-                }
-                return false;
-            } catch (Exception e) {
-                return false;
-            }
+
+
+//            Flux<DataBuffer> body = exchange.getRequest().getBody();
+//            AtomicReference<String> bodyRef = new AtomicReference<>();
+//            body.subscribe(buffer -> {
+//                CharBuffer charBuffer = StandardCharsets.UTF_8.decode(buffer.asByteBuffer());
+//                DataBufferUtils.release(buffer);
+//                bodyRef.set(charBuffer.toString());
+//            });
+//            String cachedBody = bodyRef.get();
+//            if (cachedBody == null) return false;
+//            try {
+//                JsonNode jsonNode = objectMapper.readTree(cachedBody);
+//                String key = config.getKey();
+//                String value = config.getValue();
+//                DocumentContext ctx = parseContext.parse(jsonNode);
+//                String configValue = ctx.read("$." + key, String.class);
+//                if (value == null) {
+//                    return false;
+//                }
+//                if (value.equalsIgnoreCase(configValue)) {
+//                    return true;
+//                }
+//                return false;
+//            } catch (Exception e) {
+//                return false;
+//            }
+            return true;
         };
     }
 
     @Override
     public String name() {
         return "Body";
+    }
+
+    public static class Config {
+
+        private String key;
+        private String value;
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
     }
 }

@@ -23,10 +23,9 @@ public class RegisterConfiguration {
     @Bean("PsfReactiveCompositeDiscoveryClient")
     @RefreshScope
     public ReactiveCompositeDiscoveryClient reactiveCompositeDiscoveryClient(NacosDiscoveryProperties nacosDiscoveryProperties) {
-        List<ReactiveDiscoveryClient> nacosReactiveDiscoveryClientList = null;
+        List<ReactiveDiscoveryClient> nacosReactiveDiscoveryClientList = new ArrayList<>();
         List<NacosDiscoveryConfigProperties> discoveries = nacosDiscoveryProperties.getDiscoveries();
         if (discoveries != null) {
-            nacosReactiveDiscoveryClientList = new ArrayList<>();
             for (NacosDiscoveryConfigProperties discovery : discoveries) {
                 nacosReactiveDiscoveryClientList.add(new NacosReactiveDiscoveryClient(discovery));
             }

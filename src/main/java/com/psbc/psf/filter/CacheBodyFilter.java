@@ -2,7 +2,7 @@ package com.psbc.psf.filter;
 
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpMethod;
@@ -18,9 +18,8 @@ import reactor.core.publisher.Mono;
  * auth: dahua
  * desc:
  */
-@Order(Integer.MIN_VALUE)
 @Component
-public class CacheBodyFilter implements GlobalFilter {
+public class CacheBodyFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -48,5 +47,10 @@ public class CacheBodyFilter implements GlobalFilter {
         } else {
             return chain.filter(exchange);
         }
+    }
+
+    @Override
+    public int getOrder() {
+        return Integer.MIN_VALUE + 1001;
     }
 }

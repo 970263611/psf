@@ -15,10 +15,7 @@ spring:
           uri: http://dalu
           predicates:
             # - Path=/api/hello
-            - name: Body
-              keysAndValues:
-                - key: a
-                  value: b
+            - Body=a,a
 
     nacos:
       discoveries:

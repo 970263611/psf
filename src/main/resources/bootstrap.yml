@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: psf
   cloud:
     nacos:
       config:
@@ -6,11 +8,9 @@ spring:
 #        namespace: adc7c825-3ca9-464f-9a93-7eed99a410a6
 #        username: nacos
 #        password: nacos
-        extension-configs:
-          - data-id: psf.yml
-            group: DEFAULT_GROUP
-            refresh: true
-
+        refresh: true
+        group: DEFAULT_GROUP
+        file-extension: yml
 logging:
   level:
     root: info
