@@ -7,9 +7,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * auth: dahua
  * desc:
  */
-@Component
+//@Component
 public class MonitorHandler extends AbstractHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(MonitorHandler.class);

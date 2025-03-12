@@ -1,8 +1,6 @@
 package com.psbc.psf.flowControl.sentinel;
 
 import com.alibaba.csp.sentinel.SphO;
-import com.alibaba.csp.sentinel.logging.slf4j.CommandCenterLogLogger;
-import com.alibaba.csp.sentinel.logging.slf4j.RecordLogLogger;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRuleManager;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;

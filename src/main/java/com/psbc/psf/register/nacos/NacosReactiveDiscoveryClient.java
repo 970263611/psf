@@ -11,8 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 2025/3/10 12:03
@@ -24,7 +27,7 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
     private static final Logger logger = LoggerFactory.getLogger(NacosReactiveDiscoveryClient.class);
     private NacosDiscoveryConfigProperties configProperties;
     private List<String> serviceNames = new ArrayList<>();
-    private Map<String, List<ServiceInstance>> serviceInstances = new HashMap<>();
+    private Map<String, List<ServiceInstance>> serviceInstances = new ConcurrentHashMap<>();
 
     public NacosReactiveDiscoveryClient(NacosDiscoveryConfigProperties configProperties) {
         this.configProperties = configProperties;
@@ -38,12 +41,16 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 
     @Override
     public Flux<ServiceInstance> getInstances(String serviceId) {
-        loadSourceData();
-        List<ServiceInstance> serviceInstances = this.serviceInstances.get(serviceId);
-        if (serviceInstances == null) {
-            return Flux.empty();
-        }
-        return Flux.fromIterable(this.serviceInstances.get(serviceId));
+        return Mono.fromSupplier(() -> {
+                    loadSourceData();
+                    return serviceInstances.get(serviceId);
+                })
+                .subscribeOn(Schedulers.boundedElastic())
+                .flatMapMany(instances ->
+                        (instances == null || instances.isEmpty()) ?
+                                Flux.empty() :
+                                Flux.fromIterable(instances)
+                );
     }
 
     @Override
