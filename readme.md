@@ -10,15 +10,13 @@ spring:
       discovery:
         locator:
           enabled: true
+      routeBodyEqualsIgnoreType: false
       routes:
         - id: abc
           uri: http://dalu
           predicates:
             # - Path=/api/hello
-            - name: Body
-              keysAndValues:
-                - key: a
-                  value: b
+            - Body=$.phoneNumbers[1].type, 123
 
     nacos:
       discoveries:
