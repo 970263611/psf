@@ -17,7 +17,6 @@ spring:
           predicates:
             # - Path=/api/hello
             - Body=$.phoneNumbers[1].type, 123
-
     nacos:
       discoveries:
         - serverAddr: localhost:8848
