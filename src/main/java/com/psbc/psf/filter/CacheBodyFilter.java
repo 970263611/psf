@@ -1,6 +1,6 @@
 package com.psbc.psf.filter;
 
-import com.psbc.psf.predicate.BodyRoutePredicateFactory;
+import com.psbc.psf.predicate.AbstractPsfRoutePredicateFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -40,7 +40,7 @@ public class CacheBodyFilter implements GlobalFilter, Ordered {
                 || HttpMethod.DELETE == method
                 || HttpMethod.OPTIONS == method) {
             Flux<DataBuffer> body;
-            Object cacheBody = exchange.getAttributes().get(BodyRoutePredicateFactory.CACHE_REQUEST_BODY_OBJECT_KEY);
+            Object cacheBody = exchange.getAttributes().get(AbstractPsfRoutePredicateFactory.CACHE_REQUEST_BODY_OBJECT_KEY);
             if (cacheBody != null) {
                 DataBuffer buffer = factory.wrap(cacheBody.toString().getBytes(StandardCharsets.UTF_8));
                 body = Flux.just(buffer);

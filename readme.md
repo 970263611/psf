@@ -10,13 +10,29 @@ spring:
       discovery:
         locator:
           enabled: true
-      routeBodyEqualsIgnoreType: false
+      routeBodyEqualsIgnoreType: true
       routes:
         - id: abc
           uri: http://dalu
           predicates:
             # - Path=/api/hello
-            - Body=$.phoneNumbers[1].type, 123
+            # - Body=$.phoneNumbers[1].type, 123
+            - name: Or
+              args:
+                predicates:
+                  - name: WhiteList
+                    args:
+                      key: $.phoneNumbers[0].type
+                      value:
+                        - iPhone1
+                        - test
+                  - name: WhiteList
+                    args:
+                      key: $.phoneNumbers[1].type
+                      value:
+                        - abc
+                        - dce
+                        - 123
     nacos:
       discoveries:
         - serverAddr: localhost:8848
