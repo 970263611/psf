@@ -12,7 +12,6 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,7 +44,8 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
                     loadSourceData();
                     return serviceInstances.get(serviceId);
                 })
-                .subscribeOn(Schedulers.boundedElastic())
+                //多组nacos无法同时异步，需要后续优化
+                //.subscribeOn(Schedulers.boundedElastic())
                 .flatMapMany(instances ->
                         (instances == null || instances.isEmpty()) ?
                                 Flux.empty() :
@@ -62,6 +62,7 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
     }
 
     private void loadSourceData() {
+        NamingService namingService = null;
         try {
             Properties properties = new Properties();
             properties.put("serverAddr", configProperties.getServerAddr());
@@ -72,10 +73,18 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
                 properties.put("password", configProperties.getPassword());
             }
             properties.put("namespace", configProperties.getNamespace());
-            NamingService namingService = NacosFactory.createNamingService(properties);
+            namingService = NacosFactory.createNamingService(properties);
             loadServices(namingService, configProperties.getGroup());
         } catch (NacosException e) {
             logger.error("Find instance from nacos error {}", e);
+        } finally {
+            if (namingService != null) {
+                try {
+                    namingService.shutDown();
+                } catch (NacosException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
