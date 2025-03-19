@@ -1,6 +1,6 @@
 # PSF网关组件
 
-Psf支持所有配置**动态修改后生效**，如Nacos、Apollo和Spring cloud config等注册中心。
+Psf支持所有配置**动态修改后生效**，如Nacos、Apollo和Spring cloud config等配置中心。
 
 ## 1.路由转发配置
 
