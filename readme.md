@@ -262,7 +262,7 @@ spring:
         exception: #异常断言需要配置异常的全路径及返回值。注：exception断言可以配置多组。
           - name: com.psbc.psf.exception.PsfFlowControlException
             return: {"code":"000003","msg":"发生流控","data":["resultData1","resultData2"]}
-        defaultReturn: #默认返回断言，当系统非正常运行且无法配置上述断言规则时，则返回默认断言规则内容跟。
+        defaultReturn: #默认返回断言，当系统非正常运行且没有匹配上述断言规则时，则返回默认断言规则内容跟。
           code: 000004
           msg: 系统异常
           data:
