@@ -122,7 +122,7 @@ or断言比较特殊，or中可以配置无限多个其他断言，其中任意�
 断言规则中配置的参数一定为字符串类型，但是传递的参数可能为其他类型，所以需要配置是否忽略类型只进行值匹配。
 
 ```properties
-spring.cloud.gateway.routeBodyEqualsIgnoreType=true #true则只进行值匹配，否则会先类型匹配在值匹配
+spring.cloud.gateway.routeBodyEqualsIgnoreType=true #true则只进行值匹配，否则会先类型匹配再值匹配
 ```
 
 ## 2.寻址配置
