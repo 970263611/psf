@@ -148,6 +148,31 @@ spring:
           group: nacos组2
 ```
 
+#### 其它配置
+
+##### 配置加密
+
+功能描述：密码加密，支持jasypt密码加解密操作，加密配置放入ENC(...)括号中
+
+具体配置
+
+```yaml
+spring:
+  cloud:
+    nacos:
+      discoveries:
+        - serverAddr: nacos服务地址1
+          namespace: 命名空间1
+          username: nacos用户名1
+          password: ENC(nacos密码1加密后)
+          group: nacos组1
+jasypt:
+  encryptor:
+    password: 密钥
+    algorithm: PBEWithMD5AndDES
+    ivGeneratorClassName: org.jasypt.iv.NoIvGenerator
+```
+
 ## 3.限流配置
 
 Psf支持动态配置sentinel的流控规则，有flow、system、paramFlow、degrade、authority这6种规则。配置方式和sentinel原生控制台上的配置参数一致，不配置则流控不生效，动态配置动态生效，需要指定路径的流控规则需要和gateway路由规则中的id保持一致，下面是具体的配置：
