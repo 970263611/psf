@@ -14,3 +14,8 @@ spring:
 logging:
   level:
     root: info
+jasypt:
+  encryptor:
+    password: 111
+    algorithm: PBEWithMD5AndDES
+    ivGeneratorClassName: org.jasypt.iv.NoIvGenerator
